@@ -1,4 +1,4 @@
-package com.hostfully.booking.api.adapters.out.postgres;
+package com.hostfully.booking.api.application.out.postgres;
 
 import com.hostfully.booking.api.core.domain.Person;
 import com.hostfully.booking.api.core.repository.PersonDAO;
