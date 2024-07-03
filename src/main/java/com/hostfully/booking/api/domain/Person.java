@@ -1,5 +1,6 @@
 package com.hostfully.booking.api.domain;
 
+import com.hostfully.booking.api.infrastructure.exception.BusinessException;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -46,11 +47,11 @@ public class Person extends BaseEntity {
         Pattern pattern = Pattern.compile("^[\\p{L} '-]+$");
 
         if (name == null || name.isBlank() || !pattern.matcher(name).matches()) {
-            throw new Error("Invalid name");
+            throw new BusinessException("Invalid name");
         }
 
         if (surname == null || surname.isBlank() || !pattern.matcher(surname).matches()) {
-            throw new Error("Invalid surname");
+            throw new BusinessException("Invalid surname");
         }
 
         return new Person(UUID.randomUUID(), name, surname, true);

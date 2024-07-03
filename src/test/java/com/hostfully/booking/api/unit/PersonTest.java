@@ -1,6 +1,7 @@
 package com.hostfully.booking.api.unit;
 
 import com.hostfully.booking.api.domain.Person;
+import com.hostfully.booking.api.infrastructure.exception.BusinessException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -27,16 +28,16 @@ public class PersonTest {
 
     @Test
     void shouldNotCreatePersonWithInvalidNames() {
-        Error error = assertThrows(Error.class, () -> Person.create("", "Doe"));
+        BusinessException error = assertThrows(BusinessException.class, () -> Person.create("", "Doe"));
         assertEquals(INVALID_NAME_MSG, error.getMessage());
 
-        error = assertThrows(Error.class, () -> Person.create("John", ""));
+        error = assertThrows(BusinessException.class, () -> Person.create("John", ""));
         assertEquals(INVALID_SURNAME_MSG, error.getMessage());
 
-        error = assertThrows(Error.class, () -> Person.create("John", "Doe1"));
+        error = assertThrows(BusinessException.class, () -> Person.create("John", "Doe1"));
         assertEquals(INVALID_SURNAME_MSG, error.getMessage());
 
-        error = assertThrows(Error.class, () -> Person.create("John21312", "Doe1"));
+        error = assertThrows(BusinessException.class, () -> Person.create("John21312", "Doe1"));
         assertEquals(INVALID_NAME_MSG, error.getMessage());
     }
 
