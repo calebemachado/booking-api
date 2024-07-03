@@ -91,7 +91,10 @@ This is a RESTful webservice written with Spring Boot to perform booking operati
 
 ## Architecture Design Principles
 
-The architecture design of this project is inspired by the Ports and Adapters pattern, also known as Hexagonal Architecture. While we have not adhered strictly to the model, we have tailored our implementation to focus on aspects that deliver the most value for a project of this scale.
+The architecture design of this project is inspired by the Ports and Adapters pattern, also known as [Hexagonal Architecture](https://jmgarridopaz.github.io/content/hexagonalarchitecture.html). While **we have not adhered strictly** to the model, we have tailored our implementation to focus on aspects that deliver the most value for a project of this scale.
+
+![Ports and Adapters](https://jmgarridopaz.github.io/assets/images/hexagonalarchitecture/figure1.png)
+
 Inside src/main/java we have the main package `com.hostfully.booking.api`
 
 - Application:
