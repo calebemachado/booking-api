@@ -118,7 +118,7 @@ Inside src/main/test we have main package too `com.hostfully.booking.api`, but h
 
 ## Tech Stack
 
-**Back-end:** Java 21, Spring Boot, H2 (in-memory database), Flyway, Lombok, Junit5, Maven
+**Back-end:** Java 21, Spring Boot, H2 (in-memory database), Flyway, Lombok, Junit5, Maven, Swagger
 
 ## Running locally
 
@@ -145,3 +145,16 @@ Run the tests
 ```bash
     ./mvnw test
 ```
+
+Remember that we are using H2 database, it won't hold you data after the app closes or restart.
+
+## API Documentation
+
+After you run the application, go to your browser and navigate to:
+
+```bash
+  http://localhost:8080/swagger-ui/index.html
+```
+You should see all the rest endpoints available for this API, like above image:
+
+![img.png](swagger.png)
