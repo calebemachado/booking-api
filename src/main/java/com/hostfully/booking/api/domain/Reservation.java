@@ -16,6 +16,7 @@ public class Reservation {
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
     private final UUID tenantId;
+    private final ReservationStatus status;
 
     private Reservation(
             final UUID id,
@@ -23,14 +24,15 @@ public class Reservation {
             final ReservationType type,
             final LocalDateTime startDate,
             final LocalDateTime endDate,
-            final UUID tenantId
-    ) {
+            final UUID tenantId,
+            ReservationStatus status) {
         this.id = id;
         this.placeId = placeId;
         this.type = type;
         this.startDate = startDate;
         this.endDate = endDate;
         this.tenantId = tenantId;
+        this.status = status;
     }
 
     public static Reservation create(
@@ -46,7 +48,61 @@ public class Reservation {
         validateBlock(type, tenantId);
         validateBooking(type, tenantId);
 
-        return new Reservation(UUID.randomUUID(), placeId, type, startDate, endDate, tenantId);
+        return new Reservation(UUID.randomUUID(), placeId, type, startDate, endDate, tenantId, ReservationStatus.OPEN);
+    }
+
+    public static Reservation cancel(
+            final Reservation reservation
+    ) {
+        if (!ReservationStatus.OPEN.equals(reservation.getStatus())) {
+            throw new Error(reservation.getType() + " reservation can't be canceled");
+        }
+
+        if (reservation.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new Error("Ongoing reservation can't be canceled");
+        }
+
+        return new Reservation(reservation.id, reservation.placeId, reservation.type, reservation.startDate, reservation.endDate, reservation.tenantId, ReservationStatus.CANCELED);
+    }
+
+    public static Reservation reopen(
+            final Reservation reservation
+    ) {
+        if (!ReservationStatus.CANCELED.equals(reservation.getStatus())) {
+            throw new Error(reservation.getType() + " reservation can't be reopened");
+        }
+
+        validateDates(reservation.startDate, reservation.endDate);
+
+        return new Reservation(reservation.id, reservation.placeId, reservation.type, reservation.startDate, reservation.endDate, reservation.tenantId, ReservationStatus.OPEN);
+    }
+
+    public static Reservation close(
+            final Reservation reservation
+    ) {
+        return new Reservation(reservation.id, reservation.placeId, reservation.type, reservation.startDate, reservation.endDate, reservation.tenantId, ReservationStatus.CLOSED);
+    }
+
+    public static Reservation changeDates(
+            final Reservation reservation,
+            final LocalDateTime startDate,
+            final LocalDateTime endDate
+    ) {
+        validateDates(startDate, endDate);
+
+        return new Reservation(reservation.id, reservation.placeId, reservation.type, startDate, endDate, reservation.tenantId, reservation.status);
+    }
+
+    public static Reservation restore(
+            final UUID id,
+            final UUID placeId,
+            final ReservationType type,
+            final LocalDateTime startDate,
+            final LocalDateTime endDate,
+            final UUID tenantId,
+            final ReservationStatus status
+    ) {
+        return new Reservation(id, placeId, type, startDate, endDate, tenantId, status);
     }
 
     private static void validatePlace(UUID placeId, ReservationType type) {
@@ -81,16 +137,5 @@ public class Reservation {
         ) {
             throw new Error("Dates should be valid");
         }
-    }
-
-    public static Reservation restore(
-            final UUID id,
-            final UUID placeId,
-            final ReservationType type,
-            final LocalDateTime startDate,
-            final LocalDateTime endDate,
-            final UUID tenantId
-    ) {
-        return new Reservation(id, placeId, type, startDate, endDate, tenantId);
     }
 }

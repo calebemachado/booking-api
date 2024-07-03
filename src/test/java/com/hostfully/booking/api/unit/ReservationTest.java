@@ -1,6 +1,7 @@
 package com.hostfully.booking.api.unit;
 
 import com.hostfully.booking.api.domain.Reservation;
+import com.hostfully.booking.api.domain.ReservationStatus;
 import com.hostfully.booking.api.domain.ReservationType;
 import org.junit.jupiter.api.Test;
 
@@ -126,5 +127,99 @@ public class ReservationTest {
 
         Error error = assertThrows(Error.class, () -> Reservation.create(placeId, type, startDate, endDate, null));
         assertEquals("Booking reservation should have a tenant", error.getMessage());
+    }
+
+    @Test
+    void shouldNotCancelReservationWhenStatusIsNotOpen() {
+        UUID placeId = UUID.randomUUID();
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        LocalDateTime endDate = startDate.plusDays(1);
+        ReservationType type = ReservationType.BOOKING;
+        UUID tenantId = UUID.randomUUID();
+
+        Reservation reservation = Reservation.create(placeId, type, startDate, endDate, tenantId);
+        Reservation closedReservation = Reservation.close(reservation);
+
+        Error error = assertThrows(Error.class, () -> Reservation.cancel(closedReservation));
+        assertEquals(reservation.getType() + " reservation can't be canceled", error.getMessage());
+    }
+
+    @Test
+    void shouldCancelReservationWhenStatusIsOpen() {
+        UUID placeId = UUID.randomUUID();
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        LocalDateTime endDate = startDate.plusDays(1);
+        ReservationType type = ReservationType.BOOKING;
+        UUID tenantId = UUID.randomUUID();
+
+        Reservation reservation = Reservation.create(placeId, type, startDate, endDate, tenantId);
+
+        Reservation cancelled = Reservation.cancel(reservation);
+        assertEquals(ReservationStatus.CANCELED, cancelled.getStatus());
+    }
+
+    @Test
+    void shouldReopenReservationWhenStatusIsCanceled() {
+        UUID placeId = UUID.randomUUID();
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        LocalDateTime endDate = startDate.plusDays(1);
+        ReservationType type = ReservationType.BOOKING;
+        UUID tenantId = UUID.randomUUID();
+
+        Reservation reservation = Reservation.create(placeId, type, startDate, endDate, tenantId);
+        Reservation cancelled = Reservation.cancel(reservation);
+        Reservation reopened = Reservation.reopen(cancelled);
+
+        assertEquals(ReservationStatus.OPEN, reopened.getStatus());
+    }
+
+    @Test
+    void shouldNotReopenReservationWhenStatusIsNotCanceled() {
+        UUID placeId = UUID.randomUUID();
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        LocalDateTime endDate = startDate.plusDays(1);
+        ReservationType type = ReservationType.BOOKING;
+        UUID tenantId = UUID.randomUUID();
+
+        Reservation reservation = Reservation.create(placeId, type, startDate, endDate, tenantId);
+
+        Error error = assertThrows(Error.class, () -> Reservation.reopen(reservation));
+        assertEquals(reservation.getType() + " reservation can't be reopened", error.getMessage());
+    }
+
+    @Test
+    void shouldNotChangeReservationDatesWithStartDateAfterEndDate() {
+        UUID placeId = UUID.randomUUID();
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        LocalDateTime endDate = startDate.plusDays(1);
+        UUID tenantId = UUID.randomUUID();
+
+        Reservation reservation = Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId);
+
+        LocalDateTime startDate2 = LocalDateTime.now().plusMinutes(15);
+        LocalDateTime endDate2 = startDate2.minusMinutes(5);
+
+        Error error = assertThrows(Error.class, () -> Reservation.changeDates(reservation, startDate2, endDate2));
+        assertEquals("Dates should be valid", error.getMessage());
+    }
+
+    @Test
+    void shouldChangeReservationDates() {
+        UUID placeId = UUID.randomUUID();
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        LocalDateTime endDate = startDate.plusDays(1);
+        UUID tenantId = UUID.randomUUID();
+
+        Reservation reservation = Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId);
+
+        LocalDateTime startDate2 = startDate.plusDays(1);
+        LocalDateTime endDate2 = startDate2.plusDays(5);
+
+        Reservation changedDatesReservation = Reservation.changeDates(reservation, startDate2, endDate2);
+        assertEquals(startDate2, changedDatesReservation.getStartDate());
+        assertEquals(endDate2, changedDatesReservation.getEndDate());
+        assertEquals(ReservationStatus.OPEN, changedDatesReservation.getStatus());
+        assertEquals(ReservationType.BOOKING, changedDatesReservation.getType());
+        assertEquals(reservation.getId(), changedDatesReservation.getId());
     }
 }
