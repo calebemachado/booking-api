@@ -1,4 +1,4 @@
-package com.hostfully.booking.api.core.domain;
+package com.hostfully.booking.api.domain;
 
 public enum ReservationType {
     BOOKING, BLOCK

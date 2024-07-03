@@ -1,6 +1,6 @@
 package com.hostfully.booking.api.unit;
 
-import com.hostfully.booking.api.core.domain.Person;
+import com.hostfully.booking.api.domain.Person;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

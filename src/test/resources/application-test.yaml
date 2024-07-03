@@ -1,0 +1,11 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: Hostfully Booking API Tests
+#  datasource:
+#    url: jdbc:h2:mem:hostfully_int_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE;MODE=PostgreSQL;
+#    username: sa
+#    password: password
+#    driverClassName: org.h2.Driver

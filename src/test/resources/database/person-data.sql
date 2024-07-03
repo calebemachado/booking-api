@@ -1,0 +1,5 @@
+INSERT INTO persons (id, name, surname, active, created_at, updated_at) VALUES ('8f32b062-38cf-11ef-a688-325096b39f47', 'John', 'Doe', TRUE, '2024-07-02 12:00:00+00', '2024-07-02 12:00:00+00');
+INSERT INTO persons (id, name, surname, active, created_at, updated_at) VALUES ('dadee8e6-38cf-11ef-860f-325096b39f47', 'Jane', 'Smith', TRUE, '2024-07-01 15:30:00+00', '2024-07-01 15:30:00+00');
+INSERT INTO persons (id, name, surname, active, created_at, updated_at) VALUES ('e1a2a668-38cf-11ef-99b2-325096b39f47', 'Alice', 'Johnson', FALSE, '2024-06-30 08:45:00+00', '2024-06-30 08:45:00+00');
+INSERT INTO persons (id, name, surname, active, created_at, updated_at) VALUES ('f79bd93f-8e78-43c6-ab44-b10933bd693a', 'Michael', 'Williams', TRUE, '2024-06-29 20:20:00+00', '2024-06-29 20:20:00+00');
+INSERT INTO persons (id, name, surname, active, created_at, updated_at) VALUES ('ea0bc988-38cf-11ef-803c-325096b39f47', 'Emily', 'Brown', TRUE, '2024-06-28 13:10:00+00', '2024-06-28 13:10:00+00');

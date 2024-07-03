@@ -1,12 +1,12 @@
-package com.hostfully.booking.api.core.domain;
+package com.hostfully.booking.api.domain;
 
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.hostfully.booking.api.core.domain.ReservationType.BLOCK;
-import static com.hostfully.booking.api.core.domain.ReservationType.BOOKING;
+import static com.hostfully.booking.api.domain.ReservationType.BLOCK;
+import static com.hostfully.booking.api.domain.ReservationType.BOOKING;
 
 @Getter
 public class Reservation {
