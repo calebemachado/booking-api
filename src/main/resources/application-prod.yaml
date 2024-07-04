@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: production
   threads:
     virtual:
       enabled: true
