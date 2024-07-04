@@ -22,6 +22,9 @@ public class BlockAdapter implements BlockService {
 
     @Override
     public UUID create(CreateBlockRequest request) {
+        //Validate that only the owner can create a block for a given place
+        //Validate if both place and owner informed exists
+        //Validate if the block can be created, in case another reservation o block already exists
         Reservation reservation = Reservation.createBlock(
                 request.placeId(),
                 request.startDate(),
@@ -37,6 +40,8 @@ public class BlockAdapter implements BlockService {
     public void changeDates(UUID reservationId, LocalDateTime startDate, LocalDateTime endDate) {
         Reservation reservation = reservationDAO.getById(reservationId, ReservationType.BLOCK)
                 .orElseThrow(() -> new NotFoundException(String.format("Block with informed id %s not found", reservationId)));
+
+        //Validate if the block can be changed, in case another reservation o block already exists with same dates
 
         Reservation changedReservation = Reservation.changeDates(reservation, startDate, endDate);
         reservationDAO.changeDates(changedReservation.getId(), changedReservation.getStartDate(), changedReservation.getEndDate());
