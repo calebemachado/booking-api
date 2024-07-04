@@ -6,6 +6,6 @@ public record Place(
         UUID id,
         String address,
         String description,
-        Person owner
+        UUID ownerId
 ) {
 }
