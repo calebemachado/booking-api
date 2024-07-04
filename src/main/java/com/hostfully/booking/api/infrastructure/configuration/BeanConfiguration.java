@@ -2,12 +2,14 @@ package com.hostfully.booking.api.infrastructure.configuration;
 
 import com.hostfully.booking.api.BookingApi;
 import com.hostfully.booking.api.domain.repository.PersonDAO;
+import com.hostfully.booking.api.domain.repository.PlacesDAO;
 import com.hostfully.booking.api.domain.repository.ReservationDAO;
 import com.hostfully.booking.api.domain.services.BlockService;
 import com.hostfully.booking.api.domain.services.BookingService;
 import com.hostfully.booking.api.domain.services.adapter.BlockAdapter;
 import com.hostfully.booking.api.domain.services.adapter.BookingAdapter;
 import com.hostfully.booking.api.infrastructure.repository.PersonDAODatabase;
+import com.hostfully.booking.api.infrastructure.repository.PlacesDAODatabase;
 import com.hostfully.booking.api.infrastructure.repository.ReservationDAODatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,6 +28,11 @@ public class BeanConfiguration {
     @Bean
     PersonDAO personDAO(final JdbcTemplate jdbcTemplate) {
         return new PersonDAODatabase(jdbcTemplate);
+    }
+
+    @Bean
+    PlacesDAO placesDAO(final JdbcTemplate jdbcTemplate) {
+        return new PlacesDAODatabase(jdbcTemplate);
     }
 
     @Bean

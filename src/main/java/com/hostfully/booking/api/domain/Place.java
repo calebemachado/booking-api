@@ -54,7 +54,7 @@ public class Place extends BaseEntity {
         return new Place(UUID.randomUUID(), address, description, ownerId);
     }
 
-    public Place restore(
+    public static Place restore(
             final UUID id,
             final String address,
             final String description,
