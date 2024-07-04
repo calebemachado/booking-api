@@ -36,20 +36,31 @@ public class Reservation {
         this.status = status;
     }
 
-    public static Reservation create(
+    public static Reservation createBlock(
             final UUID placeId,
-            final ReservationType type,
+            final LocalDateTime startDate,
+            final LocalDateTime endDate
+    ) {
+        validateDates(startDate, endDate);
+        validateReservationType(BLOCK);
+        validatePlace(placeId, BLOCK);
+        validateBlock(BLOCK, null);
+
+        return new Reservation(UUID.randomUUID(), placeId, BLOCK, startDate, endDate, null, null);
+    }
+
+    public static Reservation createBooking(
+            final UUID placeId,
             final LocalDateTime startDate,
             final LocalDateTime endDate,
             final UUID tenantId
     ) {
         validateDates(startDate, endDate);
-        validateReservationType(type);
-        validatePlace(placeId, type);
-        validateBlock(type, tenantId);
-        validateBooking(type, tenantId);
+        validateReservationType(BOOKING);
+        validatePlace(placeId, BOOKING);
+        validateBooking(BOOKING, tenantId);
 
-        return new Reservation(UUID.randomUUID(), placeId, type, startDate, endDate, tenantId, ReservationStatus.OPEN);
+        return new Reservation(UUID.randomUUID(), placeId, BOOKING, startDate, endDate, tenantId, ReservationStatus.OPEN);
     }
 
     public static Reservation cancel(
@@ -98,6 +109,10 @@ public class Reservation {
             Reservation reservation,
             UUID tenantId
     ) {
+        if(BLOCK.equals(reservation.getType())) {
+            throw new BusinessException("Block reservation don't have guest to be changed");
+        }
+
         if (reservation.getStartDate().isBefore(LocalDateTime.now())) {
             throw new BusinessException("Ongoing reservation can't have guest changed");
         }

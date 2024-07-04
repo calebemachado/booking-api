@@ -22,23 +22,12 @@ public class ReservationTest {
         LocalDateTime endDate = startDate.plusDays(1);
         UUID tenantId = UUID.randomUUID();
 
-        Reservation reservation = Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId);
+        Reservation reservation = Reservation.createBooking(placeId, startDate, endDate, tenantId);
 
         assertThat(reservation.getId()).isNotNull();
         assertEquals(reservation.getType(), ReservationType.BOOKING);
         assertEquals(reservation.getStartDate(), startDate);
         assertEquals(reservation.getEndDate(), endDate);
-    }
-
-    @Test
-    void shouldNotCreateReservationWithInvalidType() {
-        UUID placeId = UUID.randomUUID();
-        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
-        LocalDateTime endDate = startDate.plusDays(1);
-        UUID tenantId = UUID.randomUUID();
-
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(placeId, null, startDate, endDate, tenantId));
-        assertEquals("Reservation should be of types: BLOCK or BOOKING", error.getMessage());
     }
 
     @Test
@@ -48,7 +37,7 @@ public class ReservationTest {
         LocalDateTime endDate = startDate.plusDays(5);
         UUID tenantId = UUID.randomUUID();
 
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId));
+        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.createBooking(placeId, startDate, endDate, tenantId));
         assertEquals("Dates should be valid", error.getMessage());
     }
 
@@ -59,7 +48,7 @@ public class ReservationTest {
         LocalDateTime endDate = LocalDateTime.now().minusMinutes(1);
         UUID tenantId = UUID.randomUUID();
 
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId));
+        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.createBooking(placeId, startDate, endDate, tenantId));
         assertEquals("Dates should be valid", error.getMessage());
     }
 
@@ -70,7 +59,7 @@ public class ReservationTest {
         LocalDateTime endDate = startDate;
         UUID tenantId = UUID.randomUUID();
 
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId));
+        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.createBooking(placeId, startDate, endDate, tenantId));
         assertEquals("Dates should be valid", error.getMessage());
     }
 
@@ -81,7 +70,7 @@ public class ReservationTest {
         LocalDateTime endDate = startDate.minusMinutes(5);
         UUID tenantId = UUID.randomUUID();
 
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId));
+        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.createBooking(placeId, startDate, endDate, tenantId));
         assertEquals("Dates should be valid", error.getMessage());
     }
 
@@ -92,7 +81,7 @@ public class ReservationTest {
         UUID tenantId = UUID.randomUUID();
         ReservationType type = ReservationType.BOOKING;
 
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(null, type, startDate, endDate, tenantId));
+        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.createBooking(null, startDate, endDate, tenantId));
         assertEquals(type.name() + " reservation should have a place", error.getMessage());
     }
 
@@ -103,20 +92,8 @@ public class ReservationTest {
         UUID tenantId = UUID.randomUUID();
         ReservationType type = ReservationType.BLOCK;
 
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(null, type, startDate, endDate, tenantId));
+        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.createBlock(null, startDate, endDate));
         assertEquals(type.name() + " reservation should have a place", error.getMessage());
-    }
-
-    @Test
-    void shouldNotCreateBlockReservationWithTenant() {
-        UUID placeId = UUID.randomUUID();
-        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
-        LocalDateTime endDate = startDate.plusDays(1);
-        UUID tenantId = UUID.randomUUID();
-        ReservationType type = ReservationType.BLOCK;
-
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(placeId, type, startDate, endDate, tenantId));
-        assertEquals("Block reservation should not have tenant", error.getMessage());
     }
 
     @Test
@@ -124,9 +101,8 @@ public class ReservationTest {
         UUID placeId = UUID.randomUUID();
         LocalDateTime startDate = LocalDateTime.now().plusDays(1);
         LocalDateTime endDate = startDate.plusDays(1);
-        ReservationType type = ReservationType.BOOKING;
 
-        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.create(placeId, type, startDate, endDate, null));
+        BusinessException error = assertThrows(BusinessException.class, () -> Reservation.createBooking(placeId, startDate, endDate, null));
         assertEquals("Booking reservation should have a tenant", error.getMessage());
     }
 
@@ -135,10 +111,9 @@ public class ReservationTest {
         UUID placeId = UUID.randomUUID();
         LocalDateTime startDate = LocalDateTime.now().plusDays(1);
         LocalDateTime endDate = startDate.plusDays(1);
-        ReservationType type = ReservationType.BOOKING;
         UUID tenantId = UUID.randomUUID();
 
-        Reservation reservation = Reservation.create(placeId, type, startDate, endDate, tenantId);
+        Reservation reservation = Reservation.createBooking(placeId, startDate, endDate, tenantId);
         Reservation closedReservation = Reservation.close(reservation);
 
         BusinessException error = assertThrows(BusinessException.class, () -> Reservation.cancel(closedReservation));
@@ -150,10 +125,9 @@ public class ReservationTest {
         UUID placeId = UUID.randomUUID();
         LocalDateTime startDate = LocalDateTime.now().plusDays(1);
         LocalDateTime endDate = startDate.plusDays(1);
-        ReservationType type = ReservationType.BOOKING;
         UUID tenantId = UUID.randomUUID();
 
-        Reservation reservation = Reservation.create(placeId, type, startDate, endDate, tenantId);
+        Reservation reservation = Reservation.createBooking(placeId, startDate, endDate, tenantId);
 
         Reservation cancelled = Reservation.cancel(reservation);
         assertEquals(ReservationStatus.CANCELED, cancelled.getStatus());
@@ -164,10 +138,9 @@ public class ReservationTest {
         UUID placeId = UUID.randomUUID();
         LocalDateTime startDate = LocalDateTime.now().plusDays(1);
         LocalDateTime endDate = startDate.plusDays(1);
-        ReservationType type = ReservationType.BOOKING;
         UUID tenantId = UUID.randomUUID();
 
-        Reservation reservation = Reservation.create(placeId, type, startDate, endDate, tenantId);
+        Reservation reservation = Reservation.createBooking(placeId, startDate, endDate, tenantId);
         Reservation cancelled = Reservation.cancel(reservation);
         Reservation reopened = Reservation.reopen(cancelled);
 
@@ -179,10 +152,9 @@ public class ReservationTest {
         UUID placeId = UUID.randomUUID();
         LocalDateTime startDate = LocalDateTime.now().plusDays(1);
         LocalDateTime endDate = startDate.plusDays(1);
-        ReservationType type = ReservationType.BOOKING;
         UUID tenantId = UUID.randomUUID();
 
-        Reservation reservation = Reservation.create(placeId, type, startDate, endDate, tenantId);
+        Reservation reservation = Reservation.createBooking(placeId, startDate, endDate, tenantId);
 
         BusinessException error = assertThrows(BusinessException.class, () -> Reservation.reopen(reservation));
         assertEquals(reservation.getType() + " reservation can't be reopened", error.getMessage());
@@ -195,7 +167,7 @@ public class ReservationTest {
         LocalDateTime endDate = startDate.plusDays(1);
         UUID tenantId = UUID.randomUUID();
 
-        Reservation reservation = Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId);
+        Reservation reservation = Reservation.createBooking(placeId, startDate, endDate, tenantId);
 
         LocalDateTime startDate2 = LocalDateTime.now().plusMinutes(15);
         LocalDateTime endDate2 = startDate2.minusMinutes(5);
@@ -211,7 +183,7 @@ public class ReservationTest {
         LocalDateTime endDate = startDate.plusDays(1);
         UUID tenantId = UUID.randomUUID();
 
-        Reservation reservation = Reservation.create(placeId, ReservationType.BOOKING, startDate, endDate, tenantId);
+        Reservation reservation = Reservation.createBooking(placeId, startDate, endDate, tenantId);
 
         LocalDateTime startDate2 = startDate.plusDays(1);
         LocalDateTime endDate2 = startDate2.plusDays(5);

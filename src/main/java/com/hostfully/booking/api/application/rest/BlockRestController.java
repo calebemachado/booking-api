@@ -1,9 +1,9 @@
 package com.hostfully.booking.api.application.rest;
 
 import com.hostfully.booking.api.application.rest.request.ChangeDatesRequest;
-import com.hostfully.booking.api.application.rest.request.CreateBookingRequest;
-import com.hostfully.booking.api.application.rest.response.BookingResponse;
-import com.hostfully.booking.api.domain.services.BookingService;
+import com.hostfully.booking.api.application.rest.request.CreateBlockRequest;
+import com.hostfully.booking.api.application.rest.response.BlockResponse;
+import com.hostfully.booking.api.domain.services.BlockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +21,16 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/bookings")
-public class BookingRestController {
+@RequestMapping("/api/v1/blocks")
+public class BlockRestController {
 
-    private final BookingService bookingService;
+    private final BlockService blockService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(
             @PathVariable UUID id
     ) {
-        Optional<BookingResponse> reservation = bookingService.get(id);
+        Optional<BlockResponse> reservation = blockService.get(id);
 
         if (reservation.isPresent()) {
             return new ResponseEntity<>(reservation, HttpStatus.OK);
@@ -41,9 +41,9 @@ public class BookingRestController {
 
     @PostMapping()
     public ResponseEntity<?> create(
-            @RequestBody CreateBookingRequest request
+            @RequestBody CreateBlockRequest request
     ) {
-        UUID reservationId = bookingService.create(request);
+        UUID reservationId = blockService.create(request);
         return new ResponseEntity<>(reservationId, HttpStatus.CREATED);
     }
 
@@ -51,7 +51,7 @@ public class BookingRestController {
     public ResponseEntity<?> delete(
             @PathVariable UUID id
     ) {
-        bookingService.delete(id);
+        blockService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -60,32 +60,7 @@ public class BookingRestController {
             @PathVariable UUID id,
             @RequestBody ChangeDatesRequest request
     ) {
-        bookingService.changeDates(id, request.startDate(), request.endDate());
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PatchMapping("/{id}/guest/{guest-id}")
-    public ResponseEntity<?> changeDates(
-            @PathVariable UUID id,
-            @PathVariable("guest-id") UUID guestId
-    ) {
-        bookingService.changeTenant(id, guestId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PatchMapping("/{id}/cancel")
-    public ResponseEntity<?> cancel(
-            @PathVariable UUID id
-    ) {
-        bookingService.cancel(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @PatchMapping("/{id}/rebook")
-    public ResponseEntity<?> rebook(
-            @PathVariable UUID id
-    ) {
-        bookingService.rebook(id);
+        blockService.changeDates(id, request.startDate(), request.endDate());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

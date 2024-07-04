@@ -22,9 +22,8 @@ public class BookingAdapter implements BookingService {
 
     @Override
     public UUID create(CreateBookingRequest request) {
-        Reservation reservation = Reservation.create(
+        Reservation reservation = Reservation.createBooking(
                 request.placeId(),
-                ReservationType.valueOf(request.type()),
                 request.startDate(),
                 request.endDate(),
                 request.tenantId()
@@ -37,7 +36,7 @@ public class BookingAdapter implements BookingService {
 
     @Override
     public void changeDates(UUID reservationId, LocalDateTime startDate, LocalDateTime endDate) {
-        Reservation reservation = reservationDAO.getById(reservationId)
+        Reservation reservation = reservationDAO.getById(reservationId, ReservationType.BOOKING)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with informed id %s not found", reservationId)));
 
         Reservation changedReservation = Reservation.changeDates(reservation, startDate, endDate);
@@ -46,7 +45,7 @@ public class BookingAdapter implements BookingService {
 
     @Override
     public void changeTenant(UUID reservationId, UUID tenantId) {
-        Reservation reservation = reservationDAO.getById(reservationId)
+        Reservation reservation = reservationDAO.getById(reservationId, ReservationType.BOOKING)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with informed id %s not found", reservationId)));
 
         Reservation changedReservation = Reservation.changeTenant(reservation, tenantId);
@@ -55,7 +54,7 @@ public class BookingAdapter implements BookingService {
 
     @Override
     public void cancel(UUID reservationId) {
-        Reservation reservation = reservationDAO.getById(reservationId)
+        Reservation reservation = reservationDAO.getById(reservationId, ReservationType.BOOKING)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with informed id %s not found", reservationId)));
 
         Reservation cancelled = Reservation.cancel(reservation);
@@ -64,7 +63,7 @@ public class BookingAdapter implements BookingService {
 
     @Override
     public void rebook(UUID reservationId) {
-        Reservation reservation = reservationDAO.getById(reservationId)
+        Reservation reservation = reservationDAO.getById(reservationId, ReservationType.BOOKING)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with informed id %s not found", reservationId)));
 
         Reservation reopened = Reservation.reopen(reservation);
@@ -73,7 +72,7 @@ public class BookingAdapter implements BookingService {
 
     @Override
     public void delete(UUID reservationId) {
-        reservationDAO.getById(reservationId)
+        reservationDAO.getById(reservationId, ReservationType.BOOKING)
                 .orElseThrow(() -> new NotFoundException(String.format("Booking with informed id %s not found", reservationId)));
 
         reservationDAO.deleteById(reservationId);
@@ -81,9 +80,10 @@ public class BookingAdapter implements BookingService {
 
     @Override
     public Optional<BookingResponse> get(UUID reservationId) {
-        Optional<Reservation> optionalReservation = reservationDAO.getById(reservationId);
+        Reservation reservation = reservationDAO.getById(reservationId, ReservationType.BOOKING)
+                .orElseThrow(() -> new NotFoundException(String.format("Booking with informed id %s not found", reservationId)));
 
-        return optionalReservation.map(reservation -> new BookingResponse(
+        return Optional.of(new BookingResponse(
                 reservation.getId(),
                 reservation.getPlaceId(),
                 reservation.getType().name(),

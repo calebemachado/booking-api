@@ -2,6 +2,7 @@ package com.hostfully.booking.api.infrastructure.repository;
 
 import com.hostfully.booking.api.domain.Reservation;
 import com.hostfully.booking.api.domain.ReservationStatus;
+import com.hostfully.booking.api.domain.ReservationType;
 import com.hostfully.booking.api.domain.repository.ReservationDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -40,12 +41,13 @@ public class ReservationDAODatabase implements ReservationDAO {
     }
 
     @Override
-    public Optional<Reservation> getById(UUID id) {
+    public Optional<Reservation> getById(UUID id, ReservationType type) {
         try {
             List<Reservation> reservations = jdbcTemplate
-                    .query("SELECT id, place_id, type, start_date, end_date, tenant_id, status from reservations where id = ?",
+                    .query("SELECT id, place_id, type, start_date, end_date, tenant_id, status from reservations where id = ? and type = ?",
                             this::mapReservation,
-                            id
+                            id,
+                            type.name()
                     );
 
             if (reservations.isEmpty()) return Optional.empty();
@@ -60,7 +62,7 @@ public class ReservationDAODatabase implements ReservationDAO {
     @Override
     public void deleteById(UUID id) {
         try {
-            jdbcTemplate.update("UPDATE reservations SET status = ? WHERE id = ?", ReservationStatus.CLOSED.name(), id);
+            jdbcTemplate.update("DELETE FROM reservations WHERE id = ?", id);
         } catch (DataAccessException ex) {
             log.error("Error performing database operation: " + ex.getMessage(), ex);
         }

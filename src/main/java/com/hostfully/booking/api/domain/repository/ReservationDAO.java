@@ -2,6 +2,7 @@ package com.hostfully.booking.api.domain.repository;
 
 import com.hostfully.booking.api.domain.Reservation;
 import com.hostfully.booking.api.domain.ReservationStatus;
+import com.hostfully.booking.api.domain.ReservationType;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -10,7 +11,7 @@ import java.util.UUID;
 public interface ReservationDAO {
     void save(final Reservation reservation);
 
-    Optional<Reservation> getById(final UUID id);
+    Optional<Reservation> getById(final UUID id, ReservationType type);
 
     void deleteById(final UUID id);
 
