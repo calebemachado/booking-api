@@ -7,7 +7,7 @@ This is a RESTful webservice written with Spring Boot to perform booking operati
 - [x] Rebook a canceled booking
 - [x] Delete a booking from the system
 - [x] Get a booking
-- [] Create, update and delete a block
+- [x] Create, update and delete a block
 
 ## Folder Structure
 
