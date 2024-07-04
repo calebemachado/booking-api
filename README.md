@@ -159,3 +159,14 @@ After you run the application, go to your browser and navigate to:
 You should see all the rest endpoints available for this API, like above image:
 
 ![img.png](swagger.png)
+
+## TODOs
+- Add Authentication/Authorization
+- Implement Rate Limiting using local cache
+- Add local or distributed cache to common endpoints that does not change much
+- Dockerize application
+- Create separated profiles for environments (local, sandbox, production-canary, production)
+- Use CI/CD
+- Add images to places, storing in some sort of bucket (ex.: AWS S3)
+- Add monitoring generating metrics allowing the creation of alerts
+- Add logs for complex operations
