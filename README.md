@@ -146,7 +146,8 @@ Run the tests
     ./mvnw test
 ```
 
-Remember that we are using H2 database, it won't hold you data after the app closes or restart.
+- Obs1.: Remember that we are using H2 database, it won't hold you data after the app closes or restart.
+- Obs2.: For some integration tests that rely on dates, they can fail because of the usage of `LocalDateTime.now()`. Given some limitations with H2, it was not effective the usage of functions like `NOW()` direct on the insertions of mock data. To fix that, just verify which tests failed and look for mock .sql files inside test/resouces/database folder, changing the dates.
 
 ## API Documentation
 
