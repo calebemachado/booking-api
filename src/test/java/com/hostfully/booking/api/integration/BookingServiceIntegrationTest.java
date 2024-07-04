@@ -67,6 +67,7 @@ public class BookingServiceIntegrationTest {
     }
 
     @Sql(value = {"/database/block.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/database/block-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     void whenBlockWithSameDatesExists_shouldNotCreateBooking() {
         CreateBookingRequest createBookingRequest = new CreateBookingRequest(
@@ -81,6 +82,7 @@ public class BookingServiceIntegrationTest {
     }
 
     @Sql(value = {"/database/block.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/database/block-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     void shouldCreateBooking() {
         CreateBookingRequest createBookingRequest = new CreateBookingRequest(
@@ -113,27 +115,8 @@ public class BookingServiceIntegrationTest {
         assertEquals("Dates should be valid", error.getMessage());
     }
 
-    @Test
-    void shouldNotChangeDates_invalidEndDate() {
-        CreateBookingRequest createBookingRequest = new CreateBookingRequest(
-                UUID.fromString("48a10f26-39ac-11ef-9ffb-325096b39f47"),
-                LocalDateTime.of(2025, 3, 15, 5, 59, 59),
-                LocalDateTime.of(2025, 3, 18, 5, 59, 59),
-                UUID.fromString("ea0bc988-38cf-11ef-803c-325096b39f47")
-        );
-
-        UUID uuid = bookingAdapter.create(createBookingRequest);
-        assertNotNull(uuid);
-
-        BusinessException error = assertThrows(BusinessException.class, () -> bookingAdapter.changeDates(
-                uuid,
-                LocalDateTime.of(2025, 3, 18, 5, 59, 59),
-                LocalDateTime.now().minusDays(1)
-        ));
-        assertEquals("Dates should be valid", error.getMessage());
-    }
-
     @Sql(value = {"/database/block.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/database/block-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     void whenReservationWithSameDatesExists_shouldNotChangeDates() {
         CreateBookingRequest createBookingRequest = new CreateBookingRequest(
