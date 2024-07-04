@@ -52,9 +52,10 @@ public class BlockAdapter implements BlockService {
 
     @Override
     public Optional<BlockResponse> get(UUID reservationId) {
-        Optional<Reservation> optionalReservation = reservationDAO.getById(reservationId, ReservationType.BLOCK);
+        Reservation reservation = reservationDAO.getById(reservationId, ReservationType.BLOCK)
+                .orElseThrow(() -> new NotFoundException(String.format("Block with informed id %s not found", reservationId)));
 
-        return optionalReservation.map(reservation -> new BlockResponse(
+        return Optional.of(new BlockResponse(
                 reservation.getId(),
                 reservation.getPlaceId(),
                 reservation.getType().name(),
