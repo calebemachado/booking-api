@@ -20,4 +20,6 @@ public interface ReservationDAO {
     void changeTenant(final UUID id, final UUID tenantId);
 
     void updateStatusById(final UUID id, final ReservationStatus status);
+
+    boolean hasReservation(UUID uuid, LocalDateTime startDate, LocalDateTime endDate);
 }

@@ -36,8 +36,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    BookingService bookingService(final ReservationDAO reservationDAO) {
-        return new BookingAdapter(reservationDAO);
+    BookingService bookingService(final ReservationDAO reservationDAO, final PersonDAO personDAO, final PlacesDAO placesDAO) {
+        return new BookingAdapter(reservationDAO, personDAO, placesDAO);
     }
 
     @Bean

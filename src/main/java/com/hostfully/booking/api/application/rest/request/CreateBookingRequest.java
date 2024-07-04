@@ -8,7 +8,6 @@ import java.util.UUID;
 
 public record CreateBookingRequest(
         @JsonProperty("place_id") UUID placeId,
-        String type,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @JsonProperty("start_date") LocalDateTime startDate,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @JsonProperty("end_date") LocalDateTime endDate,
         @JsonProperty("guest_id") UUID tenantId

@@ -95,6 +95,17 @@ public class ReservationDAODatabase implements ReservationDAO {
         }
     }
 
+    @Override
+    public boolean hasReservation(UUID placeId, LocalDateTime startDate, LocalDateTime endDate) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM reservations WHERE place_id = ? AND start_date < ? AND end_date > ?)";
+        try {
+            return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, placeId, startDate, endDate));
+        } catch (DataAccessException ex) {
+            log.error("Error performing database operation: " + ex.getMessage(), ex);
+            return false;
+        }
+    }
+
     private Reservation mapReservation(ResultSet rs, int rowNum) throws SQLException {
         return Reservation.restore(
                 rs.getObject("id", UUID.class),
