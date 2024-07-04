@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Sql(value = {"/database/person-data.sql", "/database/place-data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(value = {"/database/person-data-truncate.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 public class BookingServiceIntegrationTest {
 
     @Autowired
