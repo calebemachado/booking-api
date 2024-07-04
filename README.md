@@ -170,3 +170,4 @@ You should see all the rest endpoints available for this API, like above image:
 - Add images to places, storing in some sort of bucket (ex.: AWS S3)
 - Add monitoring generating metrics allowing the creation of alerts
 - Add logs for complex operations
+- Add internationalization with messages for each language necessary
